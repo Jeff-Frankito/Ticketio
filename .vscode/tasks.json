@@ -1,0 +1,32 @@
+{
+  "version":  "2.0.0",
+  "tasks":  [
+    {
+      "label":  "sqlproj: Build Ticketio.Database",
+      "problemMatcher":  "$sqlproj-problem-matcher",
+      "command":  "dotnet",
+      "type":  "process",
+      "args":  [
+        "build",
+        "${workspaceFolder}/database/Ticketio.Database/Ticketio.Database.sqlproj"
+      ],
+      "group":  {
+        "kind":  "build",
+        "isDefault":  true
+      }
+    },
+    {
+      "label":  "sqlproj: Deploy Ticketio.Database",
+      "problemMatcher":  [],
+      "command":  "powershell",
+      "args":  [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/database/deploy.ps1"
+      ],
+      "type":  "process"
+    }
+  ]
+}

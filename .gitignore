@@ -1,0 +1,708 @@
+
+# =============================================================================
+# TICKETIO - GIT IGNORE
+# =============================================================================
+#
+# Stack:
+#   PHP 8.3 / Slim 4 / PHP-DI / BladeOne / PHPMailer
+#   Nginx / Docker / Microsoft SQL Server / Mailpit
+#   Microsoft.Build.Sql / VS Code
+#
+# Purpose:
+#   Ignore generated files, dependencies, secrets, caches, runtime data,
+#   temporary files, local development settings and build artefacts.
+#
+# =============================================================================
+
+
+# =============================================================================
+# 01. ENVIRONMENT VARIABLES & SECRETS
+# =============================================================================
+
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+*.env.local
+*.secret
+*.secrets
+*.credentials
+
+secrets/
+private/
+credentials/
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.jks
+*.keystore
+*.asc
+
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+auth.json
+**/auth.json
+
+
+# =============================================================================
+# 02. COMPOSER & PHP DEPENDENCIES
+# =============================================================================
+
+/vendor/
+/composer.phar
+
+.phpunit-watcher.yml
+
+# Keep dependency definitions and lock files version controlled.
+!/composer.json
+!/composer.lock
+
+
+# =============================================================================
+# 03. BLADEONE TEMPLATE CACHE
+# =============================================================================
+
+/cache/*
+!/cache/.gitkeep
+
+*.blade.php.cache
+*.blade.php.tmp
+
+
+# =============================================================================
+# 04. APPLICATION RUNTIME FILES
+# =============================================================================
+
+/storage/logs/
+/storage/cache/
+/storage/tmp/
+/storage/temp/
+
+/runtime/
+/tmp/
+/temp/
+
+*.pid
+*.pid.lock
+*.sock
+
+*.log
+*.log.*
+*.trace
+*.debug
+
+
+# =============================================================================
+# 05. PHP SESSIONS
+# =============================================================================
+
+sess_*
+/sessions/
+/session-data/
+
+php_sessions/
+php-session-data/
+
+
+# =============================================================================
+# 06. DOCKER
+# =============================================================================
+
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.*.local.yml
+
+compose.override.yml
+compose.local.yml
+compose.*.local.yml
+
+.docker/
+
+# Docker runtime data
+/docker/**/logs/
+/docker/**/data/
+/docker/**/tmp/
+/docker/**/temp/
+/docker/**/cache/
+
+# Container runtime files
+*.cid
+*.containerid
+
+# Keep Docker source configuration tracked.
+!/docker-compose.yml
+
+
+# =============================================================================
+# 07. NGINX
+# =============================================================================
+
+/docker/nginx/logs/
+/docker/nginx/cache/
+/docker/nginx/temp/
+/docker/nginx/tmp/
+
+access.log
+error.log
+nginx.pid
+
+fastcgi_temp/
+proxy_temp/
+client_body_temp/
+scgi_temp/
+uwsgi_temp/
+
+
+# =============================================================================
+# 08. PHP-FPM
+# =============================================================================
+
+php-fpm.pid
+php-fpm.sock
+
+php-fpm.log
+php_errors.log
+php-error.log
+
+/docker/php/logs/
+/docker/php/cache/
+/docker/php/tmp/
+
+
+# =============================================================================
+# 09. MICROSOFT SQL SERVER
+# =============================================================================
+
+# SQL Server database files
+*.mdf
+*.ndf
+*.ldf
+
+# SQL Server backups
+*.bak
+*.trn
+*.dif
+*.backup
+
+# SQL Server snapshots and exports
+*.bcp
+*.bacpac
+
+# SQL Server runtime data
+/docker/mssql/data/
+/docker/mssql/logs/
+/docker/mssql/backups/
+
+# Local database dumps
+/database/backups/
+/database/dumps/
+/database/exports/
+/database/imports/
+
+
+# =============================================================================
+# 10. SQL DATABASE PROJECTS
+# =============================================================================
+
+# Microsoft.Build.Sql / MSBuild outputs
+**/bin/
+**/obj/
+
+# Compiled database packages
+*.dacpac
+
+# Generated SQL deployment files
+*.deploy.sql
+*.deployment.sql
+*.publish.sql
+*.publish.xml
+
+# Local publish profiles may contain credentials
+*.publish.xml
+*.sqlproj.user
+
+# SQL build intermediates
+*.dbmdl
+*.jfm
+*.pdb
+
+# Temporary SQL tooling output
+*.sql.tmp
+*.sql.bak
+*.sql~
+*.sql.swp
+
+# Keep actual database definitions tracked.
+# database/dbo/Tables/
+# database/dbo/Views/
+# database/dbo/Procedures/
+# database/dbo/Functions/
+# *.sqlproj
+
+
+# =============================================================================
+# 11. MAILPIT & EMAIL TESTING
+# =============================================================================
+
+/docker/mailpit/data/
+/docker/mailpit/logs/
+
+mailpit.db
+mailpit.db-shm
+mailpit.db-wal
+
+*.eml
+*.msg
+*.mbox
+
+/mail-test-output/
+/email-previews/
+
+
+# =============================================================================
+# 12. PHPUNIT & TESTING
+# =============================================================================
+
+/tests/
+
+.phpunit.cache/
+.phpunit.result.cache
+.phpunit-watcher.yml
+
+/coverage/
+/build/coverage/
+/test-results/
+/tests/_output/
+
+coverage.xml
+clover.xml
+junit.xml
+test-results.xml
+
+*.coverage
+*.coverage.xml
+
+# PHPUnit generated artefacts
+/phpunit-watcher.yml
+
+
+# =============================================================================
+# 13. STATIC ANALYSIS & CODE QUALITY
+# =============================================================================
+
+# PHPStan
+/.phpstan/
+/phpstan-cache/
+phpstan.neon.local
+phpstan.neon.dist.local
+
+# Psalm
+/.psalm/
+/.psalm-cache/
+psalm.xml.local
+
+# PHP-CS-Fixer
+.php-cs-fixer.cache
+.php-cs-fixer.php.local
+.php-cs-fixer.dist.php.local
+
+# PHP_CodeSniffer
+.phpcs-cache
+
+# Rector
+/.rector/
+/rector-cache/
+
+# Infection
+/infection/
+infection.log
+infection-summary.log
+
+
+# =============================================================================
+# 14. PHP DEBUGGING & PROFILING
+# =============================================================================
+
+# Xdebug
+xdebug.log
+xdebug.log.*
+xdebug_trace.*
+cachegrind.out.*
+
+# Profilers
+callgrind.out.*
+*.prof
+*.profile
+*.profile.json
+
+# Blackfire
+.blackfire.yml.local
+
+# Debugging output
+/debug/
+/profiles/
+/profiling/
+
+
+# =============================================================================
+# 15. FRONTEND DEPENDENCIES
+# =============================================================================
+
+/node_modules/
+
+# Dependency-manager debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package-manager caches
+.npm/
+.yarn/cache/
+.pnpm-store/
+.bun/
+
+# Package-manager local state
+.yarn/install-state.gz
+
+# Keep frontend lock files tracked.
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+
+# =============================================================================
+# 16. FRONTEND BUILD TOOLS
+# =============================================================================
+
+# Vite
+.vite/
+node_modules/.vite/
+
+# Webpack
+.webpack-cache/
+
+# Parcel
+.parcel-cache/
+
+# Rollup
+.rollup.cache/
+
+# Turbo
+.turbo/
+
+# Next.js (if introduced)
+.next/
+
+# Other generated build outputs
+/dist/
+/build/frontend/
+/frontend/dist/
+
+
+# =============================================================================
+# 17. JAVASCRIPT & TYPESCRIPT
+# =============================================================================
+
+*.tsbuildinfo
+
+.eslintcache
+.stylelintcache
+
+# Source maps for generated builds
+/public/assets/build/**/*.map
+
+
+# =============================================================================
+# 18. CSS / SASS / LESS
+# =============================================================================
+
+.sass-cache/
+*.css.map
+*.scss.map
+*.sass.map
+*.less.map
+
+# Keep actual application styles tracked.
+# public/assets/css/app.css
+
+
+# =============================================================================
+# 19. VISUAL STUDIO CODE
+# =============================================================================
+
+.vscode/*
+
+# Shared project settings
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# VS Code workspace state
+*.code-workspace.local
+
+# VS Code local history
+.history/
+.local-history/
+
+# Extensions
+.vscode-test/
+.vscode/extensions/
+
+
+# =============================================================================
+# 20. PHPSTORM / INTELLIJ
+# =============================================================================
+
+.idea/
+
+*.iml
+*.ipr
+*.iws
+
+.phpstorm.meta.php.local
+
+
+# =============================================================================
+# 21. VISUAL STUDIO / MSBUILD
+# =============================================================================
+
+.vs/
+
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+*.slnx.user
+*.cachefile
+
+# Build logs
+msbuild.log
+msbuild.binlog
+*.binlog
+
+
+# =============================================================================
+# 22. WINDOWS
+# =============================================================================
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+Desktop.ini
+$RECYCLE.BIN/
+
+*.lnk
+*.stackdump
+
+# Windows Explorer metadata
+*.db-journal
+
+
+# =============================================================================
+# 23. MACOS
+# =============================================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+Icon?
+._*
+
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+.AppleDB
+.AppleDesktop
+
+
+# =============================================================================
+# 24. LINUX
+# =============================================================================
+
+*~
+.nfs*
+.directory
+.Trash-*
+.fuse_hidden*
+
+
+# =============================================================================
+# 25. EDITOR TEMPORARY FILES
+# =============================================================================
+
+*.swp
+*.swo
+*.swn
+
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+*.sublime-workspace
+
+# Emacs
+\#*\#
+.\#*
+
+# Vim
+Session.vim
+
+
+# =============================================================================
+# 26. ARCHIVES & COMPRESSED OUTPUT
+# =============================================================================
+
+# Temporary generated archives only.
+/exports/*.zip
+/exports/*.tar
+/exports/*.tar.gz
+/backups/*.zip
+/backups/*.7z
+
+# Do not globally ignore archives:
+# third-party libraries or application assets may ship as archives.
+
+
+# =============================================================================
+# 27. UPLOADS & GENERATED USER CONTENT
+# =============================================================================
+
+# Local application uploads
+/uploads/
+/public/uploads/
+
+# Generated exports
+/exports/
+/generated/
+
+# Uploaded documents and temporary imports
+/user-content/
+/uploaded-files/
+/import-staging/
+
+
+# =============================================================================
+# 28. LOCAL SSL CERTIFICATES
+# =============================================================================
+
+/certificates/local/
+/docker/certs/local/
+
+*.crt.local
+*.cert.local
+
+# Private keys are ignored under Section 01.
+
+
+# =============================================================================
+# 29. DOCUMENTATION GENERATION
+# =============================================================================
+
+/docs/api/
+/docs/generated/
+
+/phpdoc-output/
+/api-docs-generated/
+
+
+# =============================================================================
+# 30. PERFORMANCE BENCHMARKS
+# =============================================================================
+
+/benchmarks/results/
+/benchmark-output/
+
+*.benchmark.json
+*.benchmark.csv
+
+
+# =============================================================================
+# 31. LOCAL DEVELOPMENT OVERRIDES
+# =============================================================================
+
+config.local.php
+settings.local.php
+dependencies.local.php
+
+*.local.json
+*.local.yaml
+*.local.yml
+*.local.ini
+
+
+# =============================================================================
+# 32. MISCELLANEOUS GENERATED FILES
+# =============================================================================
+
+*.lock.tmp
+*.cache
+*.cache.*
+*.timestamp
+
+# Crash dumps
+core
+core.*
+*.core
+*.dmp
+
+# Temporary profiling/debug files
+*.dump
+*.heapsnapshot
+
+
+# =============================================================================
+# 33. IMPORTANT FILES TO KEEP IN GIT
+# =============================================================================
+#
+# These should remain version controlled:
+#
+# app/controllers/
+# app/middleware/
+# app/services/
+# app/views/
+#
+# app/dependencies.php
+# app/middleware.php
+# app/routes.php
+# app/settings.php
+#
+# database/dbo/
+# database/Ticketio.Database/
+#
+# docker/nginx/default.conf
+# docker/php/Dockerfile
+# docker-compose.yml
+#
+# public/index.php
+# public/assets/css/
+# public/assets/js/
+#
+# composer.json
+# composer.lock
+# .env.example
+#
+# =============================================================================
+# END OF TICKETIO GITIGNORE
+# =============================================================================

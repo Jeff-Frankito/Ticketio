@@ -1,0 +1,28 @@
+{
+  "name": "app/slim4",
+  "description": "",
+  "type": "project",
+  "require": {
+    "php": "^8.3",
+    "ext-pdo_sqlsrv": "*",
+    "eftec/bladeone": "^5.0",
+    "php-di/php-di": "^7.1",
+    "phpmailer/phpmailer": "^7.1",
+    "slim/psr7": "^1.7",
+    "slim/slim": "^4.15"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\Controllers\\": "app/controllers/",
+      "App\\Middleware\\": "app/middleware/",
+      "App\\Services\\": "app/services/",
+      "App\\": "app/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.3.36"
+    },
+    "sort-packages": true
+  }
+}

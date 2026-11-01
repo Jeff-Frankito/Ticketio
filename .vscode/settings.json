@@ -1,0 +1,9 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "dataworkspace.excludedProjects": [
+    "Ticketio/Ticketio.sqlproj",
+    "database/database.sqlproj"
+  ]
+}
