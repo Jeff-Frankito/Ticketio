@@ -74,6 +74,7 @@ return static function (Container $container): void {
       $container->get('settings')['auth']['session_timeout']
     );
   });
+  
   $container->set('blade', $container->get(BladeService::class));
   $container->set('mail', $container->get(MailService::class));
   $container->set('auth', $container->get(AuthService::class));

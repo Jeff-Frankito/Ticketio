@@ -1,12 +1,19 @@
 @extends('layouts.auth-layout')
 
-@section('title', 'Resend Verification - Ticketio')
+@section('title', 'Verify Email - Ticketio')
 
 @section('content')
   <h2 class="h4 mb-3">Verify your email</h2>
 
+  @if($registered ?? false)
+    <div class="alert alert-success" role="status">
+      Your account has been created. We've sent a verification link to <strong>{{ $email }}</strong>.
+      Check your inbox and spam folder, then follow the link to verify your email before signing in.
+    </div>
+  @endif
+
   <p class="text-body-secondary mb-4">
-    Enter your email address to request a new verification link.
+    Need another verification email? Enter your email address below to request a new link.
   </p>
 
   @if($success ?? false)
@@ -21,7 +28,7 @@
     <div class="mb-4">
       <label for="email" class="form-label">Email address</label>
       <input type="email" class="form-control" id="email"
-             name="email" maxlength="254"
+             name="email" maxlength="254" value="{{ $email ?? '' }}"
              autocomplete="email" required>
     </div>
 

@@ -45,13 +45,19 @@ return static function (App $app): void {
   });
 
   // --- Protected Routes ---
-  $app->group('', function (RouteCollectorProxy $group): void {
+  $app->group('', function (RouteCollectorProxy $group): void {    
+
+    // Logout
+    $group->post('/logout', [\App\Controllers\AuthController::class, 'logout'])->setName('logout');
 
     // Dashboard
     $group->get('/dashboard', [\App\Controllers\AuthController::class, 'dashboard'])->setName('dashboard');
 
-    // Logout
-    $group->post('/logout', [\App\Controllers\AuthController::class, 'logout'])->setName('logout');
+    // --- Account Settings ---
+    $group->group('/settings', function (RouteCollectorProxy $group): void {
+      $group->get('/profile', [\App\Controllers\Settings\ProfileController::class, 'index'])->setName('settings.profile');
+      $group->post('/profile', [\App\Controllers\Settings\ProfileController::class, 'update'])->setName('settings.profile.update');
+    });
 
   })->add(AuthMiddleware::class);
 

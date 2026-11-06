@@ -68,7 +68,7 @@ final class AuthService {
         [LAST_NAME],
         [EMAIL],
         [PASSWORD_HASH]
-      ) VALUES (
+      ) OUTPUT INSERTED.[ID] VALUES (
         :first_name,
         :last_name,
         :email,
@@ -77,16 +77,32 @@ final class AuthService {
     );
 
     try {
-      return $query->execute([
+      $this->database->beginTransaction();
+      $query->execute([
         'first_name' => $firstName,
         'last_name' => $lastName,
         'email' => $email,
         'password_hash' => $hash
       ]);
-    } catch (PDOException $exception) {
+      $userId = (int) $query->fetchColumn();
+      $query->closeCursor();
+
+      $details = $this->database->prepare(
+        'INSERT INTO [dbo].[USER_DETAILS] ([USER_ID]) VALUES (:user_id)'
+      );
+      $details->execute(['user_id' => $userId]);
+      $this->database->commit();
+
+      return true;
+    } catch (\Throwable $exception) {
+      if ($this->database->inTransaction()) {
+        $this->database->rollBack();
+      }
+
       // SQL Server duplicate key / unique constraint violation.
-      if (str_contains($exception->getMessage(), '2601') ||
-          str_contains($exception->getMessage(), '2627')) {
+      if ($exception instanceof PDOException &&
+          (str_contains($exception->getMessage(), '2601') ||
+           str_contains($exception->getMessage(), '2627'))) {
         return false;
       }
 

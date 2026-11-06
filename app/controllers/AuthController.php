@@ -247,7 +247,10 @@ final class AuthController {
     if ($user !== false) {
       $this->accountEmail->sendVerification((int) $user['ID']);
     }
-    return $this->redirect('/login?registered=1');
+    $_SESSION['verification_email'] = $email;
+    $_SESSION['registration_complete'] = true;
+
+    return $this->redirect('/resend-verification');
   }
 
   /**

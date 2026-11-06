@@ -249,7 +249,14 @@ final class AccountRecoveryController {
   }
 
   public function resendForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
-    return $this->render('auth.resend-verification', ['csrf' => $this->csrfToken()]);
+    $registered = $_SESSION['registration_complete'] ?? false;
+    unset($_SESSION['registration_complete']);
+
+    return $this->render('auth.resend-verification', [
+      'csrf' => $this->csrfToken(),
+      'email' => $_SESSION['verification_email'] ?? '',
+      'registered' => $registered
+    ]);
   }
 
   public function resend(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
@@ -262,7 +269,11 @@ final class AccountRecoveryController {
     if (strlen($email) <= 254 && filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $this->accountEmail->requestVerification($email);
     }
-    return $this->render('auth.resend-verification', ['csrf' => $this->csrfToken(), 'success' => true]);
+    return $this->render('auth.resend-verification', [
+      'csrf' => $this->csrfToken(),
+      'email' => $email,
+      'success' => true
+    ]);
   }
 
   private function rateLimited(): ResponseInterface {

@@ -12,12 +12,6 @@
     </div>
   @endif
 
-  @if(isset($_GET['registered']))
-    <div class="alert alert-success" role="status">
-      Account created successfully. Please check your email to verify your account.
-    </div>
-  @endif
-
   <form method="post" action="/login">
     <input type="hidden" name="_token" value="{{ $csrf }}">
 
