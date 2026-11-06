@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="@yield('lang', 'en')">
 <head>
@@ -6,27 +7,30 @@
 
   <title>@yield('title', 'Ticketio')</title>
 
-  @include('layouts.includes', ['libraries' => []])
+  <!-- Initialise Theme Before CSS Loads -->
+  <script>
+    (() => {
+      const theme = localStorage.getItem('ticketio-theme') || 'dark';
+      document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+  </script>
+
+  @include('layouts.!includes', ['libraries' => []])
 
   @yield('meta')
   @yield('styles')
   @yield('head')
+
 </head>
 <body>
 
-  @yield('header')
-
-  <main>
-    @yield('content')
-  </main>
-
-  @yield('footer')
+  @yield('body')
 
   <script>
     'use strict';
 
     // --- Document Ready ---
-    if (document.readyState === 'loading') {
+    if(document.readyState === 'loading'){
       document.addEventListener('DOMContentLoaded', () => {
         @yield('documentReady')
       }, { once: true });
@@ -35,7 +39,7 @@
     }
 
     // --- Window Loaded ---
-    if (document.readyState === 'complete') {
+    if(document.readyState === 'complete'){
       @yield('windowLoad')
     } else {
       window.addEventListener('load', () => {

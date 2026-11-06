@@ -1,27 +1,24 @@
-@extends('layouts.!master')
+@extends('layouts.app-layout')
 
 @section('title', 'Dashboard - Ticketio')
 
 @section('content')
-  <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h1>Dashboard</h1>
-        <p class="text-muted mb-0">Welcome back, {{ $name }}!</p>
-      </div>
+  <div class="container-fluid py-4">
 
-      <form method="post" action="/logout">
-        <input type="hidden" name="_token" value="{{ $csrf }}">
-
-        <button type="submit" class="btn btn-outline-danger">
-          Sign out
-        </button>
-      </form>
+    <!-- Dashboard Header -->
+    <div class="mb-4">
+      <h1 class="h3 mb-2">Dashboard</h1>
+      <p class="text-body-secondary mb-0">
+        Welcome back, {{ $name }}!
+      </p>
     </div>
 
-    <div class="alert alert-success">
+    <!-- Dashboard Content -->
+    <div class="alert alert-success" role="status">
+      <i class="bi bi-check-circle me-2"></i>
       You're successfully authenticated with Ticketio.
     </div>
+
   </div>
 @endsection
 
