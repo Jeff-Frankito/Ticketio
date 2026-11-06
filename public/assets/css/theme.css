@@ -1,0 +1,270 @@
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Ticketio - Bootstrap 5.3 Theme                                               */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+/*
+ * Light: Standard Bootstrap 5.3
+ * Dark:  Tailwind-inspired navy/slate
+ *
+ * Load after bootstrap.min.css.
+ */
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Global Bootstrap Variables                                       */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+
+  /* Body */
+  --bs-body-bg: #0f172a;
+  --bs-body-bg-rgb: 15, 23, 42;
+
+  --bs-body-color: #e2e8f0;
+  --bs-body-color-rgb: 226, 232, 240;
+
+  /* Emphasis */
+  --bs-emphasis-color: #f8fafc;
+  --bs-emphasis-color-rgb: 248, 250, 252;
+
+  /* Secondary */
+  --bs-secondary-color: rgba(203, 213, 225, 0.75);
+  --bs-secondary-color-rgb: 203, 213, 225;
+
+  --bs-secondary-bg: #1e293b;
+  --bs-secondary-bg-rgb: 30, 41, 59;
+
+  /* Tertiary */
+  --bs-tertiary-color: rgba(148, 163, 184, 0.75);
+  --bs-tertiary-color-rgb: 148, 163, 184;
+
+  --bs-tertiary-bg: #162033;
+  --bs-tertiary-bg-rgb: 22, 32, 51;
+
+  /* Borders */
+  --bs-border-color: #334155;
+  --bs-border-color-translucent: rgba(148, 163, 184, 0.2);
+
+  /* Links */
+  --bs-link-color: #60a5fa;
+  --bs-link-color-rgb: 96, 165, 250;
+
+  --bs-link-hover-color: #93c5fd;
+  --bs-link-hover-color-rgb: 147, 197, 253;
+
+  /* Primary */
+  --bs-primary: #3b82f6;
+  --bs-primary-rgb: 59, 130, 246;
+
+  --bs-primary-text-emphasis: #93c5fd;
+  --bs-primary-bg-subtle: #172554;
+  --bs-primary-border-subtle: #1d4ed8;
+
+  /* Secondary */
+  --bs-secondary-text-emphasis: #cbd5e1;
+  --bs-secondary-bg-subtle: #1e293b;
+  --bs-secondary-border-subtle: #475569;
+
+  /* Success */
+  --bs-success-text-emphasis: #86efac;
+  --bs-success-bg-subtle: #052e16;
+  --bs-success-border-subtle: #166534;
+
+  /* Danger */
+  --bs-danger-text-emphasis: #fca5a5;
+  --bs-danger-bg-subtle: #450a0a;
+  --bs-danger-border-subtle: #991b1b;
+
+  /* Warning */
+  --bs-warning-text-emphasis: #fde68a;
+  --bs-warning-bg-subtle: #422006;
+  --bs-warning-border-subtle: #a16207;
+
+  /* Info */
+  --bs-info-text-emphasis: #7dd3fc;
+  --bs-info-bg-subtle: #082f49;
+  --bs-info-border-subtle: #0369a1;
+
+  /* Light */
+  --bs-light-text-emphasis: #f1f5f9;
+  --bs-light-bg-subtle: #334155;
+  --bs-light-border-subtle: #64748b;
+
+  /* Dark */
+  --bs-dark-text-emphasis: #cbd5e1;
+  --bs-dark-bg-subtle: #020617;
+  --bs-dark-border-subtle: #334155;
+
+  /* Focus */
+  --bs-focus-ring-color: rgba(59, 130, 246, 0.35);
+
+  /* Form Validation */
+  --bs-form-valid-color: #86efac;
+  --bs-form-valid-border-color: #22c55e;
+
+  --bs-form-invalid-color: #fca5a5;
+  --bs-form-invalid-border-color: #ef4444;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Surfaces                                                        */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .card {
+  --bs-card-bg: #1e293b;
+  --bs-card-border-color: #334155;
+}
+
+[data-bs-theme="dark"] .modal-content {
+  --bs-modal-bg: #1e293b;
+  --bs-modal-border-color: #334155;
+}
+
+[data-bs-theme="dark"] .offcanvas {
+  --bs-offcanvas-bg: #1e293b;
+  --bs-offcanvas-border-color: #334155;
+}
+
+[data-bs-theme="dark"] .dropdown-menu {
+  --bs-dropdown-bg: #1e293b;
+  --bs-dropdown-border-color: #334155;
+  --bs-dropdown-link-hover-bg: #334155;
+  --bs-dropdown-link-active-bg: #2563eb;
+}
+
+[data-bs-theme="dark"] .popover {
+  --bs-popover-bg: #1e293b;
+  --bs-popover-border-color: #334155;
+  --bs-popover-header-bg: #334155;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Buttons                                                         */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: #2563eb;
+  --bs-btn-border-color: #2563eb;
+
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #1d4ed8;
+  --bs-btn-hover-border-color: #1d4ed8;
+
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #1e40af;
+  --bs-btn-active-border-color: #1e40af;
+
+  --bs-btn-disabled-color: #ffffff;
+  --bs-btn-disabled-bg: #2563eb;
+  --bs-btn-disabled-border-color: #2563eb;
+
+  --bs-btn-focus-shadow-rgb: 59, 130, 246;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+  --bs-btn-color: #60a5fa;
+  --bs-btn-border-color: #3b82f6;
+
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #2563eb;
+  --bs-btn-hover-border-color: #2563eb;
+
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #1d4ed8;
+  --bs-btn-active-border-color: #1d4ed8;
+
+  --bs-btn-focus-shadow-rgb: 59, 130, 246;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Forms                                                           */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background-color: #0f172a;
+  border-color: #475569;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.2);
+}
+
+[data-bs-theme="dark"] .form-control:disabled,
+[data-bs-theme="dark"] .form-select:disabled {
+  background-color: #1e293b;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Tables                                                          */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .table {
+  --bs-table-color: #e2e8f0;
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #334155;
+  --bs-table-striped-bg: rgba(148, 163, 184, 0.06);
+  --bs-table-striped-color: #e2e8f0;
+  --bs-table-hover-bg: rgba(148, 163, 184, 0.12);
+  --bs-table-hover-color: #f8fafc;
+  --bs-table-active-bg: #334155;
+  --bs-table-active-color: #f8fafc;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Accordions                                                       */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .accordion {
+  --bs-accordion-color: #e2e8f0;
+  --bs-accordion-bg: #1e293b;
+  --bs-accordion-border-color: #334155;
+
+  --bs-accordion-btn-color: #e2e8f0;
+  --bs-accordion-btn-bg: #1e293b;
+
+  --bs-accordion-active-color: #93c5fd;
+  --bs-accordion-active-bg: #172554;
+
+  --bs-accordion-btn-focus-border-color: #60a5fa;
+  --bs-accordion-btn-focus-box-shadow:
+    0 0 0 0.25rem rgba(59, 130, 246, 0.2);
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - List Groups                                                      */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .list-group {
+  --bs-list-group-bg: #1e293b;
+  --bs-list-group-color: #e2e8f0;
+  --bs-list-group-border-color: #334155;
+
+  --bs-list-group-action-hover-bg: #334155;
+  --bs-list-group-action-active-bg: #334155;
+
+  --bs-list-group-active-bg: #2563eb;
+  --bs-list-group-active-border-color: #2563eb;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Dark Mode - Pagination                                                       */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] .pagination {
+  --bs-pagination-bg: #1e293b;
+  --bs-pagination-border-color: #334155;
+
+  --bs-pagination-hover-bg: #334155;
+  --bs-pagination-hover-border-color: #475569;
+
+  --bs-pagination-active-bg: #2563eb;
+  --bs-pagination-active-border-color: #2563eb;
+
+  --bs-pagination-disabled-bg: #0f172a;
+  --bs-pagination-disabled-border-color: #334155;
+}
