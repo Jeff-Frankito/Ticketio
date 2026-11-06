@@ -13,12 +13,16 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 final class MailService {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * SMTP configuration.
    *
    * @var array<string, mixed>
    */
   private readonly array $settings;
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Initialise the mail service.
@@ -28,6 +32,8 @@ final class MailService {
   public function __construct(array $settings) {
     $this->settings = $settings;
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Create a configured PHPMailer instance.
@@ -58,6 +64,8 @@ final class MailService {
     return $mail;
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Send an HTML email with an optional plain-text alternative.
    *
@@ -87,4 +95,6 @@ final class MailService {
     $mail->send();
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+  
 }

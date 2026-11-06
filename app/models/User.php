@@ -14,10 +14,10 @@ use Throwable;
  */
 final class User {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   private readonly UserDetails $details;
 
-  // ///////////////////////////////////////////////////////////////////////////
-  // Constructor
   // ///////////////////////////////////////////////////////////////////////////
 
   public function __construct(
@@ -54,6 +54,8 @@ final class User {
 
     return $user === false ? null : $user;
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Retrieve account and profile information.
@@ -174,6 +176,8 @@ final class User {
     return $errors;
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Count UTF-16 code units, matching SQL Server NVARCHAR limits.
    */
@@ -260,7 +264,8 @@ final class User {
         'UPDATE [dbo].[USERS]
          SET
            [FIRST_NAME] = :first_name,
-           [LAST_NAME] = :last_name
+           [LAST_NAME] = :last_name,
+           [UPDATED_AT] = SYSUTCDATETIME()
          WHERE [ID] = :user_id'
       );
 
@@ -298,5 +303,7 @@ final class User {
       throw $exception;
     }
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

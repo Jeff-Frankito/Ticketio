@@ -15,12 +15,16 @@ use RuntimeException;
  */
 final class SessionMiddleware implements MiddlewareInterface {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Session configuration.
    *
    * @var array<string, mixed>
    */
   private readonly array $settings;
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Initialise the session middleware.
@@ -30,6 +34,8 @@ final class SessionMiddleware implements MiddlewareInterface {
   public function __construct(array $settings) {
     $this->settings = $settings;
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Start the session before passing the request to the next handler.
@@ -67,4 +73,7 @@ final class SessionMiddleware implements MiddlewareInterface {
       }
     }
   }
+  
+  // ///////////////////////////////////////////////////////////////////////////
+  
 }

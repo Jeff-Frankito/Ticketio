@@ -9,7 +9,11 @@ namespace App\Services;
  */
 final class PasswordPolicy {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   public const string MESSAGE = 'Password must contain at least 8 characters, a number and a special character.';
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Validate a new password.
@@ -23,6 +27,8 @@ final class PasswordPolicy {
       && !str_contains($password, "\0");
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Validate a password submitted during login.
    */
@@ -32,5 +38,7 @@ final class PasswordPolicy {
       && strlen($password) <= 72
       && !str_contains($password, "\0");
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Services\AccountEmailService;
 use App\Services\AccountTokenService;
 use App\Services\BladeService;
+use App\Services\SessionManager;
 use App\Services\AuthRateLimiter;
 use App\Services\PasswordPolicy;
 use DI\Container;
@@ -18,6 +19,8 @@ use Slim\Psr7\Response;
  * Handles forgotten passwords and email verification.
  */
 final class AccountRecoveryController {
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Account token service.
@@ -33,7 +36,10 @@ final class AccountRecoveryController {
    * BladeOne template service.
    */
   private readonly BladeService $blade;
+  private readonly SessionManager $session;
   private readonly AuthRateLimiter $limiter;
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Initialise the controller using the application container.
@@ -42,30 +48,11 @@ final class AccountRecoveryController {
     $this->tokens = $container->get('tokens');
     $this->accountEmail = $container->get('accountEmail');
     $this->blade = $container->get('blade');
+    $this->session = $container->get(SessionManager::class);
     $this->limiter = $container->get(AuthRateLimiter::class);
   }
 
-  /**
-   * Retrieve the current session CSRF token.
-   */
-  private function csrfToken(): string {
-    if (!isset($_SESSION['csrf_token'])) {
-      $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-
-    return $_SESSION['csrf_token'];
-  }
-
-  /**
-   * Validate a submitted CSRF token.
-   */
-  private function validCsrf(ServerRequestInterface $request): bool {
-    $data = $request->getParsedBody();
-
-    return is_array($data)
-      && is_string($data['_token'] ?? null)
-      && hash_equals($this->csrfToken(), $data['_token']);
-  }
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Render an authentication Blade view.
@@ -88,6 +75,8 @@ final class AccountRecoveryController {
       ->withHeader('X-Robots-Tag', 'noindex, nofollow');
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Display the forgotten-password form.
    */
@@ -96,9 +85,11 @@ final class AccountRecoveryController {
     ResponseInterface $response
   ): ResponseInterface {
     return $this->render('auth.forgot-password', [
-      'csrf' => $this->csrfToken()
+      'csrf' => $this->session->csrfToken()
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Submit a forgotten-password request.
@@ -107,7 +98,7 @@ final class AccountRecoveryController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $response->withStatus(403);
     }
 
@@ -123,10 +114,12 @@ final class AccountRecoveryController {
     }
 
     return $this->render('auth.forgot-password', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'success' => true
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Display the password reset form.
@@ -147,11 +140,13 @@ final class AccountRecoveryController {
     }
 
     return $this->render('auth.reset-password', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'token' => $token,
       'error' => null
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Change the password using a valid reset token.
@@ -160,7 +155,7 @@ final class AccountRecoveryController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $response->withStatus(403);
     }
 
@@ -181,7 +176,7 @@ final class AccountRecoveryController {
       $password !== $confirmation
     ) {
       return $this->render('auth.reset-password', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'token' => $token,
         'error' => PasswordPolicy::MESSAGE
       ], 422);
@@ -197,6 +192,8 @@ final class AccountRecoveryController {
       'message' => 'Your password has been changed. You can now sign in.'
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Display the email verification confirmation.
@@ -217,10 +214,12 @@ final class AccountRecoveryController {
     }
 
     return $this->render('auth.verify-email', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'token' => $token
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Verify the email address using a single-use token.
@@ -229,7 +228,7 @@ final class AccountRecoveryController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $response->withStatus(403);
     }
 
@@ -248,19 +247,22 @@ final class AccountRecoveryController {
     ], $verified ? 200 : 400);
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   public function resendForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
-    $registered = $_SESSION['registration_complete'] ?? false;
-    unset($_SESSION['registration_complete']);
+    $registered = $this->session->pullFlash('registration_complete', false);
 
     return $this->render('auth.resend-verification', [
-      'csrf' => $this->csrfToken(),
-      'email' => $_SESSION['verification_email'] ?? '',
+      'csrf' => $this->session->csrfToken(),
+      'email' => $this->session->get('temporary.verification_email', ''),
       'registered' => $registered
     ]);
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   public function resend(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
-    if (!$this->validCsrf($request)) { return $response->withStatus(403); }
+    if (!$this->session->validCsrf($request)) { return $response->withStatus(403); }
     $data = (array) $request->getParsedBody();
     $email = is_string($data['email'] ?? null) ? strtolower(trim($data['email'])) : '';
     if (!$this->limiter->allow($request, 'email_verification', $email)) {
@@ -270,15 +272,19 @@ final class AccountRecoveryController {
       $this->accountEmail->requestVerification($email);
     }
     return $this->render('auth.resend-verification', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'email' => $email,
       'success' => true
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   private function rateLimited(): ResponseInterface {
     return $this->render('auth.token-result', [
       'message' => 'Too many requests. Please try again in 15 minutes.'
     ], 429)->withHeader('Retry-After', '900');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 }

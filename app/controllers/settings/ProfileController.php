@@ -6,6 +6,7 @@ namespace App\Controllers\Settings;
 
 use App\Models\User;
 use App\Services\BladeService;
+use App\Services\SessionManager;
 use DI\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,16 +17,18 @@ use RuntimeException;
  */
 final class ProfileController {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   private readonly User $users;
   private readonly BladeService $blade;
+  private readonly SessionManager $session;
 
-  // ///////////////////////////////////////////////////////////////////////////
-  // Constructor
   // ///////////////////////////////////////////////////////////////////////////
 
   public function __construct(Container $container) {
     $this->users = $container->get(User::class);
     $this->blade = $container->get('blade');
+    $this->session = $container->get(SessionManager::class);
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -45,8 +48,7 @@ final class ProfileController {
       throw new RuntimeException('User profile not found.');
     }
 
-    $success = (bool) ($_SESSION['profile_saved'] ?? false);
-    unset($_SESSION['profile_saved']);
+    $success = (bool) $this->session->pullFlash('profile_saved', false);
 
     return $this->render($response, $profile, [], $success);
   }
@@ -69,16 +71,7 @@ final class ProfileController {
       return $response->withStatus(400);
     }
 
-    // Validate CSRF token.
-    $csrf = $_SESSION['csrf_token'] ?? null;
-    $submittedToken = $data['_token'] ?? null;
-
-    if (
-      !is_string($csrf) ||
-      $csrf === '' ||
-      !is_string($submittedToken) ||
-      !hash_equals($csrf, $submittedToken)
-    ) {
+    if (!$this->session->validCsrf($request)) {
       return $response->withStatus(403);
     }
 
@@ -127,7 +120,12 @@ final class ProfileController {
     // Save the validated profile.
     $this->users->updateProfile($userId, $values);
 
-    $_SESSION['profile_saved'] = true;
+    $profile = $this->users->getProfile($userId);
+    if ($profile !== null) {
+      $this->session->updateUser($profile);
+    }
+
+    $this->session->flash('profile_saved', true);
 
     return $response
       ->withHeader('Location', '/settings/profile')
@@ -142,13 +140,7 @@ final class ProfileController {
    * Retrieve the authenticated user ID.
    */
   private function userId(): int {
-    $userId = (int) ($_SESSION['user_id'] ?? 0);
-
-    if ($userId <= 0) {
-      throw new RuntimeException('Authentication required.');
-    }
-
-    return $userId;
+    return $this->session->requireUserId();
   }
 
   /**
@@ -167,7 +159,7 @@ final class ProfileController {
       $this->blade->run('settings.profile', [
         'settingsPage' => 'profile',
         'profile' => $profile,
-        'csrf' => $_SESSION['csrf_token'] ?? '',
+        'csrf' => $this->session->csrfToken(),
         'success' => $success,
         'errors' => $errors
       ])

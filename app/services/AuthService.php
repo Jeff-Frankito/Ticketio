@@ -12,6 +12,8 @@ use PDOException;
  */
 final class AuthService {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Create the authentication service.
    */
@@ -19,30 +21,37 @@ final class AuthService {
     private readonly PDO $database
   ) {}
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
-   * Find an active user by their email address.
+   * Find an account and its cached display information by email address.
    *
    * @return array<string, mixed>|false
    */
   public function findByEmail(string $email): array|false {
     $query = $this->database->prepare(
       'SELECT
-        [ID],
-        [FIRST_NAME],
-        [LAST_NAME],
-        [EMAIL],
-        [PASSWORD_HASH],
-        [IS_ACTIVE],
-        [EMAIL_VERIFIED_AT],
-        [SESSION_VERSION]
-      FROM [dbo].[USERS]
-      WHERE [EMAIL] = :email'
+        U.[ID],
+        U.[FIRST_NAME],
+        U.[LAST_NAME],
+        U.[EMAIL],
+        U.[PASSWORD_HASH],
+        U.[IS_ACTIVE],
+        U.[EMAIL_VERIFIED_AT],
+        U.[SESSION_VERSION],
+        D.[DISPLAY_NAME],
+        D.[AVATAR_PATH]
+      FROM [dbo].[USERS] AS U
+      LEFT JOIN [dbo].[USER_DETAILS] AS D ON D.[USER_ID] = U.[ID]
+      WHERE U.[EMAIL] = :email'
     );
 
     $query->execute(['email' => $email]);
 
     return $query->fetch(PDO::FETCH_ASSOC);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Register a user with a securely hashed password.
@@ -110,6 +119,8 @@ final class AuthService {
     }
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Authenticate an active account using email and password.
    *
@@ -166,6 +177,29 @@ final class AuthService {
     return $user;
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Share automatic authentication checks between login and protected routes.
+   */
+  public function validateAuthentication(SessionManager $session, int $timeout): bool {
+    if (!$session->isAuthenticated()) {
+      if ($session->get('auth') !== null || $session->get('user_id') !== null) {
+        $session->invalidate();
+      }
+      return false;
+    }
+
+    if ($session->isExpired($timeout) ||
+        !$this->validSession($session->requireUserId(), $session->sessionVersion())) {
+      $session->invalidate();
+      return false;
+    }
+
+    $session->touch();
+    return true;
+  }
+
   public function validSession(int $userId, int $version): bool {
     $query = $this->database->prepare(
       'SELECT [ID] FROM [dbo].[USERS]
@@ -174,4 +208,7 @@ final class AuthService {
     $query->execute([$userId, $version]);
     return $query->fetchColumn() !== false;
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
+  
 }

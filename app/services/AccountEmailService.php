@@ -11,6 +11,8 @@ use PDO;
  */
 final class AccountEmailService {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Initialise account email services.
    *
@@ -23,6 +25,8 @@ final class AccountEmailService {
     private readonly BladeService $blade,
     private readonly array $settings
   ) {}
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Request a password reset without revealing account existence.
@@ -60,6 +64,8 @@ final class AccountEmailService {
       "Reset your Ticketio password: {$url}"
     );
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Send an account verification email.
@@ -99,6 +105,8 @@ final class AccountEmailService {
     );
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   public function requestVerification(string $email): void {
     $query = $this->database->prepare('SELECT [ID] FROM [dbo].[USERS] WHERE [EMAIL] = ? AND [IS_ACTIVE] = 1 AND [EMAIL_VERIFIED_AT] IS NULL');
     $query->execute([$email]);
@@ -106,6 +114,8 @@ final class AccountEmailService {
     $query->closeCursor();
     if ($id !== false) { $this->sendVerification((int) $id); }
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   private function sendSafely(string $to, string $subject, string $html, string $text): void {
     try {
@@ -115,4 +125,6 @@ final class AccountEmailService {
       error_log('Account email delivery failed. Check SMTP configuration and availability.');
     }
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 }

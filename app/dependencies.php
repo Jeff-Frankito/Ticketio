@@ -7,12 +7,15 @@ use App\Services\BladeService;
 use App\Services\MailService;
 use App\Services\AccountEmailService;
 use App\Services\AccountTokenService;
+use App\Services\SessionManager;
 use DI\Container;
 
 /**
  * Register Ticketio application dependencies.
  */
 return static function (Container $container): void {
+
+  $container->set(SessionManager::class, static fn (): SessionManager => new SessionManager());
 
   // --- Database Connection ---
   $container->set(PDO::class, static function (Container $container): PDO {
@@ -71,6 +74,7 @@ return static function (Container $container): void {
   $container->set(\App\Middleware\AuthMiddleware::class, static function (Container $container): \App\Middleware\AuthMiddleware {
     return new \App\Middleware\AuthMiddleware(
       $container->get(AuthService::class),
+      $container->get(SessionManager::class),
       $container->get('settings')['auth']['session_timeout']
     );
   });

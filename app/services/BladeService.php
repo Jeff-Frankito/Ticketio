@@ -13,6 +13,8 @@ use eftec\bladeone\BladeOne;
  */
 final class BladeService extends BladeOne {
 
+  // ///////////////////////////////////////////////////////////////////////////
+  
   /**
    * Initialise BladeOne with the application's view and cache paths.
    */
@@ -24,6 +26,7 @@ final class BladeService extends BladeOne {
     );
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
   
   /**
    * Begin an IDE-only block excluded from rendered HTML.
@@ -32,11 +35,15 @@ final class BladeService extends BladeOne {
     return '<?php /*';
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * End an IDE-only block excluded from rendered HTML.
    */
   protected function compileEnddummy(?string $expression = null): string {
     return '*/ ?>';
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

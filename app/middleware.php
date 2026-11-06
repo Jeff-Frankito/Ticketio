@@ -15,7 +15,8 @@ return static function (App $app): void {
   // Register Slim routing middleware.
   $app->addRoutingMiddleware();
 
-  // Register session middleware.
+  // Slim executes application middleware last-in, first-out: start the session
+  // before routing and route-level AuthMiddleware can access SessionManager.
   $app->add(new SessionMiddleware($settings['session']));
 
   // Register error middleware last to catch application exceptions.

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Middleware;
 
 use App\Services\AuthService;
+use App\Services\SessionManager;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,13 +18,18 @@ use Slim\Psr7\Response;
  */
 final class AuthMiddleware implements MiddlewareInterface {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Maximum session inactivity period in seconds.
    */
   public function __construct(
     private readonly AuthService $auth,
+    private readonly SessionManager $session,
     private readonly int $sessionTimeout = 7200
   ) {}
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Validate the authenticated session before processing the request.
@@ -32,31 +38,15 @@ final class AuthMiddleware implements MiddlewareInterface {
     ServerRequestInterface $request,
     RequestHandlerInterface $handler
   ): ResponseInterface {
-    $userId = $_SESSION['user_id'] ?? null;
-    $lastActivity = $_SESSION['last_activity'] ?? null;
-
-    // --- Authentication Check ---
-    if (!is_int($userId) || $userId <= 0 || !is_int($lastActivity)) {
+    if (!$this->auth->validateAuthentication($this->session, $this->sessionTimeout)) {
       return $this->redirectToLogin();
     }
-
-    // --- Session Expiration ---
-    if (time() - $lastActivity >= $this->sessionTimeout ||
-        !is_int($_SESSION['session_version'] ?? null) ||
-        !$this->auth->validSession($userId, $_SESSION['session_version'])) {
-      $_SESSION = [];
-
-      session_regenerate_id(true);
-
-      return $this->redirectToLogin();
-    }
-
-    // --- Update Session Activity ---
-    $_SESSION['last_activity'] = time();
 
     // --- Continue Request ---
     return $handler->handle($request)->withHeader('Cache-Control', 'no-store');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Redirect unauthenticated requests to the login page.
@@ -66,5 +56,7 @@ final class AuthMiddleware implements MiddlewareInterface {
       ->withHeader('Location', '/login')
       ->withHeader('Cache-Control', 'no-store');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

@@ -12,12 +12,16 @@ use RuntimeException;
  */
 final class AccountTokenService {
 
+  // ///////////////////////////////////////////////////////////////////////////
+  
   /**
    * Initialise the token service.
    */
   public function __construct(
     private readonly PDO $database
   ) {}
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Create a single-use account token.
@@ -59,6 +63,8 @@ final class AccountTokenService {
     }
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Check whether a token exists and has not expired.
    */
@@ -79,6 +85,8 @@ final class AccountTokenService {
 
     return $query->fetchColumn() !== false;
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Consume a token and perform the corresponding account update atomically.
@@ -170,4 +178,7 @@ final class AccountTokenService {
       throw $exception;
     }
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
+
 }

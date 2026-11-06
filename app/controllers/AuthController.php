@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Services\AuthService;
 use App\Services\BladeService;
+use App\Services\SessionManager;
 use App\Services\AccountEmailService;
 use App\Services\AuthRateLimiter;
 use App\Services\PasswordPolicy;
@@ -19,6 +20,8 @@ use DI\Container;
  */
 final class AuthController {
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Authentication service.
    */
@@ -28,9 +31,12 @@ final class AuthController {
    * BladeOne template service.
    */
   private readonly BladeService $blade;
+  private readonly SessionManager $session;
   private readonly AccountEmailService $accountEmail;
   private readonly AuthRateLimiter $limiter;
   private readonly int $sessionTimeout;
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Initialise the authentication controller.
@@ -38,32 +44,13 @@ final class AuthController {
   public function __construct(Container $container) {
     $this->auth = $container->get('auth');
     $this->blade = $container->get('blade');
+    $this->session = $container->get(SessionManager::class);
     $this->accountEmail = $container->get('accountEmail');
     $this->limiter = $container->get(AuthRateLimiter::class);
     $this->sessionTimeout = $container->get('settings')['auth']['session_timeout'];
   }
 
-  /**
-   * Generate or retrieve the current CSRF token.
-   */
-  private function csrfToken(): string {
-    if (!isset($_SESSION['csrf_token'])) {
-      $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-
-    return $_SESSION['csrf_token'];
-  }
-
-  /**
-   * Validate the submitted CSRF token.
-   */
-  private function validCsrf(ServerRequestInterface $request): bool {
-    $data = (array) $request->getParsedBody();
-    $token = $data['_token'] ?? null;
-
-    return is_string($token) &&
-      hash_equals($this->csrfToken(), $token);
-  }
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Render a BladeOne view.
@@ -87,12 +74,16 @@ final class AuthController {
     );
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Redirect with HTTP 303 after a form submission.
    */
   private function redirect(string $path): ResponseInterface {
     return (new Response(303))->withHeader('Location', $path)->withHeader('Cache-Control', 'no-store');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Display the login form.
@@ -101,18 +92,17 @@ final class AuthController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (is_int($_SESSION['user_id'] ?? null) &&
-        is_int($_SESSION['session_version'] ?? null) &&
-        time() - (int) ($_SESSION['last_activity'] ?? 0) < $this->sessionTimeout &&
-        $this->auth->validSession($_SESSION['user_id'], $_SESSION['session_version'])) {
+    if ($this->auth->validateAuthentication($this->session, $this->sessionTimeout)) {
       return $this->redirect('/dashboard');
     }
 
     return $this->render('auth.login', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'error' => null
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Authenticate a submitted login.
@@ -121,9 +111,9 @@ final class AuthController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $this->render('auth.login', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Your session has expired. Please try again.'
       ], 403);
     }
@@ -135,7 +125,7 @@ final class AuthController {
 
     if (!$this->limiter->allow($request, 'login', $email)) {
       return $this->render('auth.login', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Too many attempts. Please try again in 15 minutes.'
       ], 429)->withHeader('Retry-After', '900');
     }
@@ -154,29 +144,24 @@ final class AuthController {
       return $this->loginFailed();
     }
 
-    session_regenerate_id(true);
-
-    $_SESSION = [
-      'user_id' => (int) $user['ID'],
-      'user_name' => $user['FIRST_NAME'],
-      'session_version' => (int) $user['SESSION_VERSION'],
-      'csrf_token' => bin2hex(random_bytes(32)),
-      'authenticated_at' => time(),
-      'last_activity' => time()
-    ];
+    $this->session->login($user);
 
     return $this->redirect('/dashboard');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Handle unsuccessful authentication.
    */
   private function loginFailed(): ResponseInterface {
     return $this->render('auth.login', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'error' => 'Unable to sign in. Check your credentials and make sure your email is verified.'
     ], 401);
   }
+  
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Display the registration form.
@@ -186,10 +171,12 @@ final class AuthController {
     ResponseInterface $response
   ): ResponseInterface {
     return $this->render('auth.register', [
-      'csrf' => $this->csrfToken(),
+      'csrf' => $this->session->csrfToken(),
       'error' => null
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Register a new account.
@@ -198,9 +185,9 @@ final class AuthController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $this->render('auth.register', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Your session has expired. Please try again.'
       ], 403);
     }
@@ -215,7 +202,7 @@ final class AuthController {
 
     if (!$this->limiter->allow($request, 'register', $email)) {
       return $this->render('auth.register', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Too many attempts. Please try again in 15 minutes.'
       ], 429)->withHeader('Retry-After', '900');
     }
@@ -231,14 +218,14 @@ final class AuthController {
 
     if (!$valid) {
       return $this->render('auth.register', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Please check your details. ' . PasswordPolicy::MESSAGE
       ], 422);
     }
 
     if (!$this->auth->register($firstName, $lastName, $email, $password)) {
       return $this->render('auth.register', [
-        'csrf' => $this->csrfToken(),
+        'csrf' => $this->session->csrfToken(),
         'error' => 'Unable to create an account with those details.'
       ], 422);
     }
@@ -247,11 +234,13 @@ final class AuthController {
     if ($user !== false) {
       $this->accountEmail->sendVerification((int) $user['ID']);
     }
-    $_SESSION['verification_email'] = $email;
-    $_SESSION['registration_complete'] = true;
+    $this->session->set('temporary.verification_email', $email);
+    $this->session->flash('registration_complete', true);
 
     return $this->redirect('/resend-verification');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * End the current user's session.
@@ -260,29 +249,16 @@ final class AuthController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!$this->validCsrf($request)) {
+    if (!$this->session->validCsrf($request)) {
       return $response->withStatus(403);
     }
 
-    $_SESSION = [];
-
-    if (ini_get('session.use_cookies')) {
-      $params = session_get_cookie_params();
-
-      setcookie(session_name(), '', [
-        'expires' => time() - 3600,
-        'path' => $params['path'],
-        'domain' => $params['domain'],
-        'secure' => $params['secure'],
-        'httponly' => $params['httponly'],
-        'samesite' => $params['samesite']
-      ]);
-    }
-
-    session_destroy();
+    $this->session->logout();
 
     return $this->redirect('/login');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Display the protected dashboard.
@@ -291,13 +267,15 @@ final class AuthController {
     ServerRequestInterface $request,
     ResponseInterface $response
   ): ResponseInterface {
-    if (!isset($_SESSION['user_id'])) {
+    if (!$this->session->isAuthenticated()) {
       return $this->redirect('/login');
     }
 
     return $this->render('dashboard', [
-      'name' => $_SESSION['user_name'],
-      'csrf' => $this->csrfToken()
+      'name' => $this->session->get('user.display_name', ''),
+      'csrf' => $this->session->csrfToken()
     ]);
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 }
