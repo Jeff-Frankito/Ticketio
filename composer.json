@@ -6,6 +6,8 @@
     "php": "^8.3",
     "ext-pdo_sqlsrv": "*",
     "eftec/bladeone": "^5.0",
+    "guzzlehttp/guzzle": "^8.3",
+    "league/oauth2-github": "^3.1",
     "php-di/php-di": "^7.1",
     "phpmailer/phpmailer": "^7.1",
     "slim/psr7": "^1.7",

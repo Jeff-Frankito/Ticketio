@@ -13,6 +13,10 @@
     </div>
   @endif
 
+  @if($githubError ?? false)
+    <div class="alert alert-danger" role="alert">{{ $githubError }}</div>
+  @endif
+
   <form method="post" action="/register">
     <input type="hidden" name="_token" value="{{ $csrf }}">
 
@@ -99,6 +103,13 @@
       Create account
     </button>
   </form>
+
+  <div class="d-flex align-items-center gap-3 my-4" aria-hidden="true">
+    <hr class="flex-grow-1"><span class="text-body-secondary small">OR</span><hr class="flex-grow-1">
+  </div>
+  <a href="/auth/github" class="btn btn-outline-secondary w-100">
+    <i class="bi bi-github me-2" aria-hidden="true"></i>Continue with GitHub
+  </a>
 
   <p class="text-center mt-4 mb-0">
     Already have an account?

@@ -1,8 +1,6 @@
-
 FROM php:8.3.36-fpm-bookworm
 
 ENV ACCEPT_EULA=Y
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
@@ -10,7 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     unixodbc-dev \
     libzip-dev \
-    && docker-php-ext-install opcache zip \
+    libcurl4-openssl-dev \
+    libonig-dev \
+    && docker-php-ext-install opcache zip curl mbstring \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
       | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg \

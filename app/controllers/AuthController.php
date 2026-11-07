@@ -98,7 +98,8 @@ final class AuthController {
 
     return $this->render('auth.login', [
       'csrf' => $this->session->csrfToken(),
-      'error' => null
+      'error' => null,
+      'githubError' => $this->session->pullFlash('github_error')
     ]);
   }
 
@@ -172,7 +173,8 @@ final class AuthController {
   ): ResponseInterface {
     return $this->render('auth.register', [
       'csrf' => $this->session->csrfToken(),
-      'error' => null
+      'error' => null,
+      'githubError' => $this->session->pullFlash('github_error')
     ]);
   }
 

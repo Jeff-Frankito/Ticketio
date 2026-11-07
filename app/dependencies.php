@@ -70,6 +70,14 @@ return static function (Container $container): void {
     return new AuthService($container->get(PDO::class));
   });
 
+  $container->set(\App\Services\GitHubOAuth::class, static function (Container $container): \App\Services\GitHubOAuth {
+    $github = $container->get('settings')['github'];
+    return new \App\Services\GitHubOAuth($github['client_id'], $github['client_secret'], $github['redirect_uri']);
+  });
+  $container->set(\App\Models\GitHubConnection::class, static function (Container $container): \App\Models\GitHubConnection {
+    return new \App\Models\GitHubConnection($container->get(PDO::class));
+  });
+
   // --- Service Aliases ---
   $container->set(\App\Middleware\AuthMiddleware::class, static function (Container $container): \App\Middleware\AuthMiddleware {
     return new \App\Middleware\AuthMiddleware(

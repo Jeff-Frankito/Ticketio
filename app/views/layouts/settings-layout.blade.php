@@ -43,6 +43,12 @@
             Notifications
           </span>
 
+          <a href="/settings/github"
+             class="nav-link rounded {{ ($settingsPage ?? '') === 'github' ? 'active bg-body-secondary fw-semibold' : 'text-body' }}"
+             @if(($settingsPage ?? '') === 'github') aria-current="page" @endif>
+            <i class="bi bi-github me-2"></i>
+            Connected accounts
+          </a>
           <hr class="my-3">
 
           <div class="small fw-semibold text-body-secondary px-3 mb-2">

@@ -28,6 +28,10 @@ return static function (App $app): void {
     $group->get('/register', [\App\Controllers\AuthController::class, 'registerForm'])->setName('register');
     $group->post('/register', [\App\Controllers\AuthController::class, 'register'])->setName('register.submit');
 
+    // GitHub authentication
+    $group->get('/auth/github', [\App\Controllers\GitHubAuthController::class, 'start'])->setName('auth.github');
+    $group->get('/auth/github/callback', [\App\Controllers\GitHubAuthController::class, 'callback'])->setName('auth.github.callback');
+
     // Password Recovery
     $group->get('/forgot-password', [\App\Controllers\AccountRecoveryController::class, 'forgotForm'])->setName('password.forgot');
     $group->post('/forgot-password', [\App\Controllers\AccountRecoveryController::class, 'forgot'])->setName('password.forgot.submit');
@@ -55,6 +59,9 @@ return static function (App $app): void {
 
     // --- Account Settings ---
     $group->group('/settings', function (RouteCollectorProxy $group): void {
+      $group->get('/github', [\App\Controllers\GitHubAuthController::class, 'settings'])->setName('settings.github');
+      $group->post('/github/connect', [\App\Controllers\GitHubAuthController::class, 'connect'])->setName('settings.github.connect');
+      $group->post('/github/disconnect', [\App\Controllers\GitHubAuthController::class, 'disconnect'])->setName('settings.github.disconnect');
       $group->get('/profile', [\App\Controllers\Settings\ProfileController::class, 'index'])->setName('settings.profile');
       $group->post('/profile', [\App\Controllers\Settings\ProfileController::class, 'update'])->setName('settings.profile.update');
     });

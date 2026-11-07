@@ -180,6 +180,60 @@ final class AuthService {
   // ///////////////////////////////////////////////////////////////////////////
 
   /**
+   * Load the active, verified Ticketio user for a GitHub login session.
+   *
+   * @return array<string, mixed>|false
+   */
+  public function findByIdForSession(int $userId): array|false {
+    $query = $this->database->prepare(
+      'SELECT
+         U.[ID], U.[FIRST_NAME], U.[LAST_NAME], U.[SESSION_VERSION],
+         D.[DISPLAY_NAME], D.[AVATAR_PATH]
+       FROM [dbo].[USERS] AS U
+       LEFT JOIN [dbo].[USER_DETAILS] AS D ON D.[USER_ID] = U.[ID]
+       WHERE U.[ID] = :user_id
+         AND U.[IS_ACTIVE] = 1
+         AND U.[EMAIL_VERIFIED_AT] IS NOT NULL'
+    );
+
+    $query->execute(['user_id' => $userId]);
+    $user = $query->fetch(PDO::FETCH_ASSOC);
+    $query->closeCursor();
+
+    if ($user !== false) {
+      $update = $this->database->prepare('UPDATE [dbo].[USERS] SET [LAST_LOGIN_AT] = SYSUTCDATETIME() WHERE [ID] = :id');
+      $update->execute(['id' => $userId]);
+    }
+
+    return $user;
+  }
+
+  // ///////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Confirm the current password before removing the GitHub login method.
+   */
+  public function verifyPasswordForUser(int $userId, string $password): bool {
+    if ($userId <= 0 || !PasswordPolicy::validLogin($password)) {
+      return false;
+    }
+
+    $query = $this->database->prepare(
+      'SELECT [PASSWORD_HASH]
+       FROM [dbo].[USERS]
+       WHERE [ID] = :user_id AND [IS_ACTIVE] = 1'
+    );
+
+    $query->execute(['user_id' => $userId]);
+    $hash = $query->fetchColumn();
+    $query->closeCursor();
+
+    return is_string($hash) && password_verify($password, $hash);
+  }
+
+  // ///////////////////////////////////////////////////////////////////////////
+
+  /**
    * Share automatic authentication checks between login and protected routes.
    */
   public function validateAuthentication(SessionManager $session, int $timeout): bool {

@@ -10,6 +10,7 @@ use DI\Container;
 return static function (Container $container): void {
   $basePath = dirname(__DIR__);
   $environment = getenv('APP_ENV') ?: 'development';
+  $appUrl = rtrim(getenv('APP_URL') ?: 'http://127.0.0.1:8080', '/');
 
   $container->set('settings', [
 
@@ -26,9 +27,15 @@ return static function (Container $container): void {
       'email_verification_lifetime' => 86400
     ],
 
+    'github' => [
+      'client_id' => (string) (getenv('GITHUB_CLIENT_ID') ?: ''),
+      'client_secret' => (string) (getenv('GITHUB_CLIENT_SECRET') ?: ''),
+      'redirect_uri' => $appUrl . '/auth/github/callback'
+    ],
+
     // --- Application URL Settings ---
     'url' => [
-      'base' => rtrim(getenv('APP_URL') ?: 'http://localhost:8080', '/')
+      'base' => $appUrl
     ],
 
     // --- Error Handling ---

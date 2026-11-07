@@ -12,6 +12,10 @@
     </div>
   @endif
 
+  @if($githubError ?? false)
+    <div class="alert alert-danger" role="alert">{{ $githubError }}</div>
+  @endif
+
   <form method="post" action="/login">
     <input type="hidden" name="_token" value="{{ $csrf }}">
 
@@ -38,6 +42,13 @@
       Sign in
     </button>
   </form>
+
+  <div class="d-flex align-items-center gap-3 my-4" aria-hidden="true">
+    <hr class="flex-grow-1"><span class="text-body-secondary small">OR</span><hr class="flex-grow-1">
+  </div>
+  <a href="/auth/github" class="btn btn-outline-secondary w-100">
+    <i class="bi bi-github me-2" aria-hidden="true"></i>Continue with GitHub
+  </a>
 
   <div class="text-center mt-4">
     <p class="mb-2">
