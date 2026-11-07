@@ -143,6 +143,8 @@ final class ProfileController {
     return $this->session->requireUserId();
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Render the profile settings page.
    *
@@ -169,5 +171,7 @@ final class ProfileController {
       ->withHeader('Content-Type', 'text/html; charset=UTF-8')
       ->withHeader('Cache-Control', 'no-store');
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

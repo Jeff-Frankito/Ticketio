@@ -59,9 +59,11 @@ return static function (App $app): void {
 
     // --- Account Settings ---
     $group->group('/settings', function (RouteCollectorProxy $group): void {
-      $group->get('/github', [\App\Controllers\GitHubAuthController::class, 'settings'])->setName('settings.github');
-      $group->post('/github/connect', [\App\Controllers\GitHubAuthController::class, 'connect'])->setName('settings.github.connect');
-      $group->post('/github/disconnect', [\App\Controllers\GitHubAuthController::class, 'disconnect'])->setName('settings.github.disconnect');
+      $group->get('/password', [\App\Controllers\Settings\PasswordController::class, 'index'])->setName('settings.password');
+      $group->post('/password', [\App\Controllers\Settings\PasswordController::class, 'setup'])->setName('settings.password.setup');
+      $group->get('/github', [\App\Controllers\Settings\GitHubController::class, 'index'])->setName('settings.github');
+      $group->post('/github/connect', [\App\Controllers\Settings\GitHubController::class, 'connect'])->setName('settings.github.connect');
+      $group->post('/github/disconnect', [\App\Controllers\Settings\GitHubController::class, 'disconnect'])->setName('settings.github.disconnect');
       $group->get('/profile', [\App\Controllers\Settings\ProfileController::class, 'index'])->setName('settings.profile');
       $group->post('/profile', [\App\Controllers\Settings\ProfileController::class, 'update'])->setName('settings.profile.update');
     });

@@ -40,6 +40,8 @@ final class GitHubConnection {
     return $userId === false ? null : (int) $userId;
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   /**
    * Find connection details for a Ticketio user's settings page.
    *
@@ -253,6 +255,22 @@ final class GitHubConnection {
   }
 
   // ///////////////////////////////////////////////////////////////////////////
+
+  /** Refresh only OAuth-verified metadata; never overwrite the editable profile. */
+  public function refreshIdentity(int $userId, int $githubId, string $username): void {
+    $this->validateIdentity($userId, $githubId, $username);
+    $query = $this->db->prepare(
+      'UPDATE [dbo].[USER_GITHUB_CONNECTIONS]
+       SET [GITHUB_USERNAME] = :username, [UPDATED_AT] = SYSUTCDATETIME()
+       WHERE [USER_ID] = :user_id AND [GITHUB_USER_ID] = :github_id'
+    );
+    $query->execute(['username' => $username, 'user_id' => $userId, 'github_id' => $githubId]);
+    if ($query->rowCount() !== 1) {
+      throw new GitHubAuthException('Your GitHub connection changed. Please sign in again.');
+    }
+  }
+
+  // ///////////////////////////////////////////////////////////////////////////
   // Helpers
   // ///////////////////////////////////////////////////////////////////////////
 
@@ -264,11 +282,16 @@ final class GitHubConnection {
     }
   }
 
+  // ///////////////////////////////////////////////////////////////////////////
+
   private function duplicateKey(Throwable $exception): bool {
     return $exception instanceof PDOException && (
+      in_array((int) ($exception->errorInfo[1] ?? 0), [2601, 2627], true) ||
       str_contains($exception->getMessage(), '2601') ||
       str_contains($exception->getMessage(), '2627')
     );
   }
+
+  // ///////////////////////////////////////////////////////////////////////////
 
 }

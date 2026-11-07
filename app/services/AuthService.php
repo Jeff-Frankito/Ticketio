@@ -110,7 +110,8 @@ final class AuthService {
 
       // SQL Server duplicate key / unique constraint violation.
       if ($exception instanceof PDOException &&
-          (str_contains($exception->getMessage(), '2601') ||
+          (in_array((int) ($exception->errorInfo[1] ?? 0), [2601, 2627], true) ||
+           str_contains($exception->getMessage(), '2601') ||
            str_contains($exception->getMessage(), '2627'))) {
         return false;
       }
@@ -164,27 +165,18 @@ final class AuthService {
       if ($query->rowCount() !== 1) { return false; }
     }
 
-    $query = $this->database->prepare(
-      'UPDATE [dbo].[USERS]
-       SET [LAST_LOGIN_AT] = SYSUTCDATETIME()
-       WHERE [ID] = :id'
-    );
-
-    $query->execute(['id' => $user['ID']]);
-
-    unset($user['PASSWORD_HASH']);
-
-    return $user;
+    return $this->findByIdForSession((int) $user['ID'], (int) $user['SESSION_VERSION']);
   }
 
   // ///////////////////////////////////////////////////////////////////////////
 
   /**
-   * Load the active, verified Ticketio user for a GitHub login session.
+   * Load current session data and record login for either authentication method.
+   * Password login supplies its checked version to reject concurrent revocation.
    *
    * @return array<string, mixed>|false
    */
-  public function findByIdForSession(int $userId): array|false {
+  public function findByIdForSession(int $userId, ?int $expectedVersion = null): array|false {
     $query = $this->database->prepare(
       'SELECT
          U.[ID], U.[FIRST_NAME], U.[LAST_NAME], U.[SESSION_VERSION],
@@ -200,9 +192,18 @@ final class AuthService {
     $user = $query->fetch(PDO::FETCH_ASSOC);
     $query->closeCursor();
 
-    if ($user !== false) {
-      $update = $this->database->prepare('UPDATE [dbo].[USERS] SET [LAST_LOGIN_AT] = SYSUTCDATETIME() WHERE [ID] = :id');
-      $update->execute(['id' => $userId]);
+    if ($user === false || ($expectedVersion !== null && (int) $user['SESSION_VERSION'] !== $expectedVersion)) {
+      return false;
+    }
+
+    $update = $this->database->prepare(
+      'UPDATE [dbo].[USERS] SET [LAST_LOGIN_AT] = SYSUTCDATETIME()
+       WHERE [ID] = :id AND [SESSION_VERSION] = :version
+         AND [IS_ACTIVE] = 1 AND [EMAIL_VERIFIED_AT] IS NOT NULL'
+    );
+    $update->execute(['id' => $userId, 'version' => $user['SESSION_VERSION']]);
+    if ($update->rowCount() !== 1) {
+      return false;
     }
 
     return $user;

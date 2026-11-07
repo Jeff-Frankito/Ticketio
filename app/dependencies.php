@@ -8,6 +8,8 @@ use App\Services\MailService;
 use App\Services\AccountEmailService;
 use App\Services\AccountTokenService;
 use App\Services\SessionManager;
+use App\Services\GitHubOAuth;
+use App\Models\GitHubConnection;
 use DI\Container;
 
 /**
@@ -70,15 +72,23 @@ return static function (Container $container): void {
     return new AuthService($container->get(PDO::class));
   });
 
-  $container->set(\App\Services\GitHubOAuth::class, static function (Container $container): \App\Services\GitHubOAuth {
+  // --- GitHub OAuth ---
+  $container->set(GitHubOAuth::class, static function (Container $container): GitHubOAuth {
     $github = $container->get('settings')['github'];
-    return new \App\Services\GitHubOAuth($github['client_id'], $github['client_secret'], $github['redirect_uri']);
-  });
-  $container->set(\App\Models\GitHubConnection::class, static function (Container $container): \App\Models\GitHubConnection {
-    return new \App\Models\GitHubConnection($container->get(PDO::class));
+
+    return new GitHubOAuth(
+      $github['client_id'],
+      $github['client_secret'],
+      $github['redirect_uri']
+    );
   });
 
-  // --- Service Aliases ---
+  // --- GitHub Connections ---
+  $container->set(GitHubConnection::class, static function (Container $container): GitHubConnection {
+    return new GitHubConnection($container->get(PDO::class));
+  });
+
+  // --- Authentication Middleware ---
   $container->set(\App\Middleware\AuthMiddleware::class, static function (Container $container): \App\Middleware\AuthMiddleware {
     return new \App\Middleware\AuthMiddleware(
       $container->get(AuthService::class),
@@ -87,6 +97,7 @@ return static function (Container $container): void {
     );
   });
   
+  // --- Service Aliases ---
   $container->set('blade', $container->get(BladeService::class));
   $container->set('mail', $container->get(MailService::class));
   $container->set('auth', $container->get(AuthService::class));

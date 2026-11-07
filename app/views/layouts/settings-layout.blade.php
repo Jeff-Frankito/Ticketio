@@ -55,10 +55,12 @@
             Security
           </div>
 
-          <span class="nav-link text-body-secondary opacity-50">
+          <a href="/settings/password"
+             class="nav-link rounded {{ ($settingsPage ?? '') === 'password' ? 'active bg-body-secondary fw-semibold' : 'text-body' }}"
+             @if(($settingsPage ?? '') === 'password') aria-current="page" @endif>
             <i class="bi bi-shield-lock me-2"></i>
             Password & security
-          </span>
+          </a>
 
           <span class="nav-link text-body-secondary opacity-50">
             <i class="bi bi-display me-2"></i>

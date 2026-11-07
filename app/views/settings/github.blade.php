@@ -33,7 +33,7 @@
             {{ $connection['GITHUB_USERNAME'] }}
           </a>
         </p>
-        <p class="text-body-secondary small">To disconnect, confirm your Ticketio password. GitHub-only accounts must set a password via email recovery first.</p>
+        <p class="text-body-secondary small">To disconnect, confirm your Ticketio password. If you signed up with GitHub, <a href="/settings/password">set a Ticketio password</a> first.</p>
         <form method="post" action="/settings/github/disconnect">
           <input type="hidden" name="_token" value="{{ $csrf }}">
           <div class="mb-3">
