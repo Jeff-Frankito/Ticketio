@@ -15,7 +15,6 @@ services:
       - ./docker/nginx/logs:/var/log/nginx
     depends_on:
       - php
-      - websocket
     restart: unless-stopped
 
   # /////////////////////////////////////////////////////////////////////////
@@ -31,7 +30,7 @@ services:
       - ./:/var/www/html
     environment:
       APP_ENV: ${APP_ENV:-development}
-      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_URL: ${APP_URL:-http://127.0.0.1:8080}
 
       DB_HOST: ${DB_HOST:-mssql}
       DB_PORT: ${DB_PORT:-1433}
@@ -46,6 +45,8 @@ services:
 
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_EVENTS_CHANNEL: ${REDIS_EVENTS_CHANNEL:-ticketio:notifications}
+      REDIS_QUEUE_STREAM: ${REDIS_QUEUE_STREAM:-ticketio:jobs}
 
       WEBSOCKET_SECRET: ${WEBSOCKET_SECRET:?Set WEBSOCKET_SECRET in .env}
     depends_on:
@@ -122,9 +123,11 @@ services:
       - ./:/var/www/html
     environment:
       APP_ENV: ${APP_ENV:-development}
+      APP_URL: ${APP_URL:-http://127.0.0.1:8080}
 
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_EVENTS_CHANNEL: ${REDIS_EVENTS_CHANNEL:-ticketio:notifications}
 
       WEBSOCKET_SECRET: ${WEBSOCKET_SECRET:?Set WEBSOCKET_SECRET in .env}
     depends_on:
@@ -155,6 +158,8 @@ services:
 
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_EVENTS_CHANNEL: ${REDIS_EVENTS_CHANNEL:-ticketio:notifications}
+      REDIS_QUEUE_STREAM: ${REDIS_QUEUE_STREAM:-ticketio:jobs}
 
       MAIL_HOST: ${MAIL_HOST:-mailpit}
       MAIL_PORT: ${MAIL_PORT:-1025}

@@ -3,28 +3,64 @@ FROM php:8.3.36-fpm-bookworm
 
 ENV ACCEPT_EULA=Y
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    gnupg \
-    unzip \
-    unixodbc-dev \
-    libzip-dev \
-    && docker-php-ext-install opcache zip \
+# ///////////////////////////////////////////////////////////////////////////
+# System Dependencies and PHP Extensions
+# ///////////////////////////////////////////////////////////////////////////
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        gnupg \
+        unzip \
+        unixodbc-dev \
+        libzip-dev \
+    && docker-php-ext-install \
+        opcache \
+        zip \
+        pcntl \
+        posix \
+    \
+    # ///////////////////////////////////////////////////////////////////////
+    # Microsoft SQL Server ODBC Driver
+    # ///////////////////////////////////////////////////////////////////////
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
-      | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg \
+        | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg \
     && chmod 644 /etc/apt/keyrings/microsoft.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" \
-      > /etc/apt/sources.list.d/mssql-release.list \
+        > /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends msodbcsql18 \
+    && apt-get install -y --no-install-recommends \
+        msodbcsql18 \
+    \
+    # ///////////////////////////////////////////////////////////////////////
+    # Microsoft SQL Server PHP Extensions
+    # ///////////////////////////////////////////////////////////////////////
     && pecl install sqlsrv pdo_sqlsrv \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv \
-    && rm -rf /var/lib/apt/lists/* /tmp/pear
+    \
+    # ///////////////////////////////////////////////////////////////////////
+    # Cleanup
+    # ///////////////////////////////////////////////////////////////////////
+    && rm -rf \
+        /var/lib/apt/lists/* \
+        /tmp/pear
+
+# ///////////////////////////////////////////////////////////////////////////
+# Composer
+# ///////////////////////////////////////////////////////////////////////////
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
+# ///////////////////////////////////////////////////////////////////////////
+# Working Directory
+# ///////////////////////////////////////////////////////////////////////////
+
 WORKDIR /var/www/html
+
+# ///////////////////////////////////////////////////////////////////////////
+# Default PHP-FPM Process
+# ///////////////////////////////////////////////////////////////////////////
 
 CMD ["php-fpm"]
