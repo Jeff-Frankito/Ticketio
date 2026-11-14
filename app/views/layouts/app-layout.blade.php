@@ -1,5 +1,19 @@
-
 @extends('layouts.!master')
+
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+{{-- Application Libraries                                                      --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+
+@section('head')
+  @include('layouts.!includes', [
+    'libraries' => ['realtime'],
+    'core' => false
+  ])
+@endsection
+
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+{{-- Application Layout                                                         --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
 
 @section('body')
   <div class="d-flex flex-column min-vh-100">
@@ -63,11 +77,6 @@
   <div
     id="ticketioToastContainer"
     class="toast-container position-fixed bottom-0 end-0 p-3"
-    style="z-index: 1090;"
     aria-label="Notifications"
   ></div>
-
-  <!-- Ticketio Real-Time Services -->
-  <script src="/assets/js/ticketio-toast.js" defer></script>
-  <script src="/assets/js/ticketio-websocket.js" defer></script>
 @endsection

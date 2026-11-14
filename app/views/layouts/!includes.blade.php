@@ -1,17 +1,28 @@
-{{-- --- Core Libraries (Always Included) --- --}}
 
-{{-- Bootstrap --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+{{-- Ticketio - Shared Libraries                                                --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
 
-{{-- jQuery --}}
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+{{-- --- Core Libraries (Always Included Unless Disabled) --- --}}
 
-{{-- Bootstrap JavaScript --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" defer></script>
+@if($core ?? true)
+
+  {{-- Bootstrap --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+  {{-- jQuery --}}
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+
+  {{-- Bootstrap JavaScript --}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" defer></script>
+
+@endif
 
 
-{{-- --- Optional Libraries --- --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+{{-- Optional Libraries                                                         --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
 
 {{-- DataTables --}}
 @if(in_array('datatables', $libraries ?? [], true))
@@ -28,7 +39,7 @@
 {{-- Flatpickr --}}
 @if(in_array('flatpickr', $libraries ?? [], true))
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4/dist/js/flatpickr.min.js" defer></script>
 @endif
 
 {{-- Tom Select --}}
@@ -42,8 +53,21 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
 @endif
 
+{{-- Real-Time WebSockets --}}
+@if(in_array('realtime', $libraries ?? [], true))
+  <script src="/assets/js/ticketio-toast.js" defer></script>
+  <script src="/assets/js/ticketio-websocket.js" defer></script>
+@endif
 
-{{-- --- Ticketio Assets (Always Included) --- --}}
-<link rel="stylesheet" href="/assets/css/theme.css">
-<link rel="stylesheet" href="/assets/css/app.css">
-<script src="/assets/js/app.js" defer></script>
+
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+{{-- Ticketio Assets                                                            --}}
+{{-- /////////////////////////////////////////////////////////////////////////// --}}
+
+@if($core ?? true)
+
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+
+@endif
