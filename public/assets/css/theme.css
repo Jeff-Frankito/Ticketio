@@ -1,9 +1,8 @@
-
 /* /////////////////////////////////////////////////////////////////////////// */
-/* Ticketio - Bootstrap 5.3 Theme                                               */
+/* Ticketio - Bootstrap 5.3 Theme                                              */
 /* /////////////////////////////////////////////////////////////////////////// */
 
-/*
+/**
  * Light: Standard Bootstrap 5.3
  * Dark:  Tailwind-inspired navy/slate
  *
@@ -11,7 +10,7 @@
  */
 
 /* /////////////////////////////////////////////////////////////////////////// */
-/* Dark Mode - Global Bootstrap Variables                                       */
+/* Dark Mode - Global Bootstrap Variables                                      */
 /* /////////////////////////////////////////////////////////////////////////// */
 
 [data-bs-theme="dark"] {
@@ -216,7 +215,7 @@
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */
-/* Dark Mode - Accordions                                                       */
+/* Dark Mode - Accordions                                                      */
 /* /////////////////////////////////////////////////////////////////////////// */
 
 [data-bs-theme="dark"] .accordion {
@@ -236,7 +235,7 @@
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */
-/* Dark Mode - List Groups                                                      */
+/* Dark Mode - List Groups                                                     */
 /* /////////////////////////////////////////////////////////////////////////// */
 
 [data-bs-theme="dark"] .list-group {
@@ -252,7 +251,7 @@
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */
-/* Dark Mode - Pagination                                                       */
+/* Dark Mode - Pagination                                                      */
 /* /////////////////////////////////////////////////////////////////////////// */
 
 [data-bs-theme="dark"] .pagination {
@@ -267,4 +266,183 @@
 
   --bs-pagination-disabled-bg: #0f172a;
   --bs-pagination-disabled-border-color: #334155;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Ticketio - Toast Notifications                                              */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+/**
+ * Theme-aware real-time notification styling.
+ *
+ * Bootstrap component variables control background, borders,
+ * headers and text without interfering with other components.
+ */
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Shared Styling                                                      */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+#ticketioToastContainer {
+  width: min(390px, 100%);
+  max-width: calc(100vw - 1rem);
+  z-index: 1090;
+}
+
+#ticketioToastContainer .toast {
+  --bs-toast-max-width: 100%;
+  --bs-toast-spacing: 1rem;
+
+  width: 100%;
+  max-width: 100%;
+
+  border-radius: 0.625rem;
+  border: 1px solid var(--bs-toast-border-color);
+  overflow: hidden;
+
+  background-color: var(--bs-toast-bg);
+  color: var(--bs-toast-color);
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+#ticketioToastContainer .toast-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.75rem 1rem;
+
+  background-color: var(--bs-toast-header-bg);
+  color: var(--bs-toast-header-color);
+
+  border-bottom: 1px solid var(--bs-toast-header-border-color);
+}
+
+#ticketioToastContainer .toast-header strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#ticketioToastContainer .toast-header small {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+#ticketioToastContainer .toast-header .btn-close {
+  flex-shrink: 0;
+  margin: 0 0 0 0.25rem;
+}
+
+#ticketioToastContainer .toast-body {
+  padding: 0.875rem 1rem;
+
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+#ticketioToastContainer .ticketio-toast-indicator {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.1);
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Notification Types                                                  */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+.ticketio-toast-success {
+  --ticketio-toast-accent: #22c55e;
+}
+
+.ticketio-toast-info {
+  --ticketio-toast-accent: #0ea5e9;
+}
+
+.ticketio-toast-warning {
+  --ticketio-toast-accent: #f59e0b;
+}
+
+.ticketio-toast-danger {
+  --ticketio-toast-accent: #ef4444;
+}
+
+#ticketioToastContainer .ticketio-toast-indicator {
+  background-color: var(--ticketio-toast-accent, #0ea5e9);
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Light Mode                                                          */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="light"] #ticketioToastContainer .toast {
+  --bs-toast-bg: #ffffff;
+  --bs-toast-color: #334155;
+  --bs-toast-border-color: #cbd5e1;
+
+  --bs-toast-header-bg: #f8fafc;
+  --bs-toast-header-color: #0f172a;
+  --bs-toast-header-border-color: #e2e8f0;
+}
+
+[data-bs-theme="light"] #ticketioToastContainer .toast-header small {
+  color: #64748b;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Dark Mode                                                           */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+[data-bs-theme="dark"] #ticketioToastContainer .toast {
+  --bs-toast-bg: #1e293b;
+  --bs-toast-color: #e2e8f0;
+  --bs-toast-border-color: #475569;
+
+  --bs-toast-header-bg: #263449;
+  --bs-toast-header-color: #f8fafc;
+  --bs-toast-header-border-color: #334155;
+
+  box-shadow:
+    0 12px 32px rgba(2, 6, 23, 0.4),
+    0 2px 8px rgba(2, 6, 23, 0.2);
+}
+
+[data-bs-theme="dark"] #ticketioToastContainer .toast-header small {
+  color: #94a3b8;
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Responsive                                                          */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+@media (max-width: 575.98px) {
+  #ticketioToastContainer {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.75rem !important;
+  }
+
+  #ticketioToastContainer .toast {
+    width: 100%;
+  }
+}
+
+/* /////////////////////////////////////////////////////////////////////////// */
+/* Toast - Reduced Motion                                                      */
+/* /////////////////////////////////////////////////////////////////////////// */
+
+@media (prefers-reduced-motion: reduce) {
+  #ticketioToastContainer .toast {
+    transition: none;
+  }
 }

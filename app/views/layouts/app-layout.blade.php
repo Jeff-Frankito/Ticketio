@@ -1,3 +1,4 @@
+
 @extends('layouts.!master')
 
 @section('body')
@@ -49,4 +50,24 @@
     </footer>
 
   </div>
+
+  <!-- Ticketio Real-Time Configuration -->
+  <div
+    id="ticketioRealtime"
+    data-ticket-endpoint="/auth/websocket-ticket"
+    data-csrf="{{ $csrf ?? '' }}"
+    hidden
+  ></div>
+
+  <!-- Bootstrap Toast Notifications -->
+  <div
+    id="ticketioToastContainer"
+    class="toast-container position-fixed bottom-0 end-0 p-3"
+    style="z-index: 1090;"
+    aria-label="Notifications"
+  ></div>
+
+  <!-- Ticketio Real-Time Services -->
+  <script src="/assets/js/ticketio-toast.js" defer></script>
+  <script src="/assets/js/ticketio-websocket.js" defer></script>
 @endsection

@@ -8,6 +8,9 @@ use App\Services\MailService;
 use App\Services\AccountEmailService;
 use App\Services\AccountTokenService;
 use App\Services\SessionManager;
+use App\Services\Redis\RedisService;
+use App\Services\Events\EventPublisher;
+use App\Services\WebSocket\WebSocketTicketService;
 use DI\Container;
 
 /**
@@ -70,6 +73,25 @@ return static function (Container $container): void {
     return new AuthService($container->get(PDO::class));
   });
 
+  // --- Redis Service ---
+  $container->set(RedisService::class, static function (Container $container): RedisService {
+    return new RedisService();
+  });
+
+  // --- Event Publisher ---
+  $container->set(EventPublisher::class, static function (Container $container): EventPublisher {
+    return new EventPublisher(
+      $container->get(RedisService::class)
+    );
+  });
+
+  // --- WebSocket Authentication Tickets ---
+  $container->set(WebSocketTicketService::class, static function (Container $container): WebSocketTicketService {
+    return new WebSocketTicketService(
+      $container->get(RedisService::class)
+    );
+  });
+
   // --- Service Aliases ---
   $container->set(\App\Middleware\AuthMiddleware::class, static function (Container $container): \App\Middleware\AuthMiddleware {
     return new \App\Middleware\AuthMiddleware(
@@ -78,11 +100,15 @@ return static function (Container $container): void {
       $container->get('settings')['auth']['session_timeout']
     );
   });
-  
+
   $container->set('blade', $container->get(BladeService::class));
   $container->set('mail', $container->get(MailService::class));
   $container->set('auth', $container->get(AuthService::class));
   $container->set('tokens', $container->get(AccountTokenService::class));
   $container->set('accountEmail', $container->get(AccountEmailService::class));
+
+  $container->set('redis', $container->get(RedisService::class));
+  $container->set('events', $container->get(EventPublisher::class));
+  $container->set('websocketTickets', $container->get(WebSocketTicketService::class));
 
 };

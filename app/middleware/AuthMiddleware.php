@@ -6,7 +6,6 @@ namespace App\Middleware;
 
 use App\Services\AuthService;
 use App\Services\SessionManager;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -38,18 +37,35 @@ final class AuthMiddleware implements MiddlewareInterface {
     ServerRequestInterface $request,
     RequestHandlerInterface $handler
   ): ResponseInterface {
+
     if (!$this->auth->validateAuthentication($this->session, $this->sessionTimeout)) {
+
+      // API endpoints must not redirect to an HTML login page.
+      if ($request->getUri()->getPath() === '/auth/websocket-ticket') {
+        $response = new Response(401);
+
+        $response->getBody()->write(json_encode([
+          'success' => false,
+          'message' => 'Authentication required.'
+        ], JSON_THROW_ON_ERROR));
+
+        return $response
+          ->withHeader('Content-Type', 'application/json; charset=UTF-8')
+          ->withHeader('Cache-Control', 'no-store');
+      }
+
       return $this->redirectToLogin();
     }
 
     // --- Continue Request ---
-    return $handler->handle($request)->withHeader('Cache-Control', 'no-store');
+    return $handler->handle($request)
+      ->withHeader('Cache-Control', 'no-store');
   }
 
   // ///////////////////////////////////////////////////////////////////////////
 
   /**
-   * Redirect unauthenticated requests to the login page.
+   * Redirect unauthenticated page requests to the login page.
    */
   private function redirectToLogin(): ResponseInterface {
     return (new Response(302))

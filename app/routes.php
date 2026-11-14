@@ -14,8 +14,8 @@ return static function (App $app): void {
   // --- Public Routes ---
   $app->group('', function (RouteCollectorProxy $group): void {
 
-    // Home
-    $group->get('/', function ($request, $response) {
+    // Home redirect
+    $group->get('/', function($request, $response){
       return $response
         ->withHeader('Location', '/login')
         ->withStatus(302);
@@ -45,13 +45,19 @@ return static function (App $app): void {
   });
 
   // --- Protected Routes ---
-  $app->group('', function (RouteCollectorProxy $group): void {    
+  $app->group('', function (RouteCollectorProxy $group): void {
 
     // Logout
     $group->post('/logout', [\App\Controllers\AuthController::class, 'logout'])->setName('logout');
 
     // Dashboard
     $group->get('/dashboard', [\App\Controllers\AuthController::class, 'dashboard'])->setName('dashboard');
+
+    // WebSocket Authentication
+    $group->post(
+      '/auth/websocket-ticket',
+      [\App\Controllers\WebSocketController::class, 'ticket']
+    )->setName('websocket.ticket');
 
     // --- Account Settings ---
     $group->group('/settings', function (RouteCollectorProxy $group): void {
