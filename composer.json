@@ -6,10 +6,17 @@
     "php": "^8.3",
     "ext-pdo_sqlsrv": "*",
     "eftec/bladeone": "^5.0",
+    "guzzlehttp/guzzle": "^7.0",
+    "http-interop/http-factory-guzzle": "^1.0",
+    "knplabs/github-api": "^3.0",
     "php-di/php-di": "^7.1",
     "phpmailer/phpmailer": "^7.1",
+    "predis/predis": "^3.0",
     "slim/psr7": "^1.7",
-    "slim/slim": "^4.15"
+    "slim/slim": "^4.15",
+    "symfony/cache": "^7.4",
+    "workerman/redis": "^2.0",
+    "workerman/workerman": "^5.0"
   },
   "autoload": {
     "psr-4": {
@@ -25,6 +32,9 @@
     "platform": {
       "php": "8.3.36"
     },
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   }
 }
