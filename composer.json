@@ -20,15 +20,6 @@
   },
   "autoload": {
     "psr-4": {
-      "Websocket\\": "websocket",
-      "App\\Controllers\\": "app/controllers/",
-      "App\\Controllers\\Settings\\": "app/controllers/settings/",
-      "App\\Models\\": "app/models/",
-      "App\\Middleware\\": "app/middleware/",
-      "App\\Services\\": "app/services/",
-      "App\\Services\\Redis\\": "app/services/redis/",
-      "App\\Services\\Events\\": "app/services/events/",
-      "App\\Services\\WebSocket\\": "app/services/websocket/",
       "App\\": "app/"
     }
   },

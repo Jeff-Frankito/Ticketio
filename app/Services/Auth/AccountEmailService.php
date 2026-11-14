@@ -2,8 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace App\Services;
+namespace App\Services\Auth;
 
+use App\Services\Mail\MailService;
+use App\Services\View\BladeService;
 use PDO;
 
 /**

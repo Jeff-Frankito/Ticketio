@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-use App\Services\AuthService;
-use App\Services\BladeService;
-use App\Services\MailService;
-use App\Services\AccountEmailService;
-use App\Services\AccountTokenService;
-use App\Services\SessionManager;
+use App\Services\Auth\AuthService;
+use App\Services\View\BladeService;
+use App\Services\Mail\MailService;
+use App\Services\Auth\AccountEmailService;
+use App\Services\Auth\AccountTokenService;
+use App\Services\Session\SessionManager;
 use App\Services\Redis\RedisService;
 use App\Services\Events\EventPublisher;
 use App\Services\WebSocket\WebSocketTicketService;

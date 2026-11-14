@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace App\Controllers;
+namespace App\Controllers\WebSocket;
 
-use App\Services\SessionManager;
+use App\Services\Session\SessionManager;
 use App\Services\WebSocket\WebSocketTicketService;
 use DI\Container;
 use Psr\Http\Message\ResponseInterface;

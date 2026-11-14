@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace App\Controllers;
+namespace App\Controllers\Auth;
 
-use App\Services\AccountEmailService;
-use App\Services\AccountTokenService;
-use App\Services\BladeService;
-use App\Services\SessionManager;
-use App\Services\AuthRateLimiter;
-use App\Services\PasswordPolicy;
+use App\Services\Auth\AccountEmailService;
+use App\Services\Auth\AccountTokenService;
+use App\Services\View\BladeService;
+use App\Services\Session\SessionManager;
+use App\Services\Auth\AuthRateLimiter;
+use App\Services\Auth\PasswordPolicy;
 use DI\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

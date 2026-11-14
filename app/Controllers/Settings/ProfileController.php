@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace App\Controllers\Settings;
 
-use App\Models\User;
-use App\Services\BladeService;
-use App\Services\SessionManager;
+use App\Models\Users\User;
+use App\Services\View\BladeService;
+use App\Services\Session\SessionManager;
 use DI\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace App\Controllers;
+namespace App\Controllers\Auth;
 
-use App\Services\AuthService;
-use App\Services\BladeService;
-use App\Services\SessionManager;
-use App\Services\AccountEmailService;
-use App\Services\AuthRateLimiter;
-use App\Services\PasswordPolicy;
+use App\Services\Auth\AuthService;
+use App\Services\View\BladeService;
+use App\Services\Session\SessionManager;
+use App\Services\Auth\AccountEmailService;
+use App\Services\Auth\AuthRateLimiter;
+use App\Services\Auth\PasswordPolicy;
 use Slim\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

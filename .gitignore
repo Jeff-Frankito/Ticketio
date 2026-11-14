@@ -678,9 +678,10 @@ core.*
 #
 # These should remain version controlled:
 #
-# app/controllers/
-# app/middleware/
-# app/services/
+# app/Controllers/
+# app/Middleware/
+# app/Models/
+# app/Services/
 # app/views/
 #
 # app/dependencies.php

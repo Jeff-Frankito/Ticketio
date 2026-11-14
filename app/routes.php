@@ -22,25 +22,25 @@ return static function (App $app): void {
     })->setName('home');
 
     // Authentication
-    $group->get('/login', [\App\Controllers\AuthController::class, 'loginForm'])->setName('login');
-    $group->post('/login', [\App\Controllers\AuthController::class, 'login'])->setName('login.submit');
+    $group->get('/login', [\App\Controllers\Auth\AuthController::class, 'loginForm'])->setName('login');
+    $group->post('/login', [\App\Controllers\Auth\AuthController::class, 'login'])->setName('login.submit');
 
-    $group->get('/register', [\App\Controllers\AuthController::class, 'registerForm'])->setName('register');
-    $group->post('/register', [\App\Controllers\AuthController::class, 'register'])->setName('register.submit');
+    $group->get('/register', [\App\Controllers\Auth\AuthController::class, 'registerForm'])->setName('register');
+    $group->post('/register', [\App\Controllers\Auth\AuthController::class, 'register'])->setName('register.submit');
 
     // Password Recovery
-    $group->get('/forgot-password', [\App\Controllers\AccountRecoveryController::class, 'forgotForm'])->setName('password.forgot');
-    $group->post('/forgot-password', [\App\Controllers\AccountRecoveryController::class, 'forgot'])->setName('password.forgot.submit');
+    $group->get('/forgot-password', [\App\Controllers\Auth\AccountRecoveryController::class, 'forgotForm'])->setName('password.forgot');
+    $group->post('/forgot-password', [\App\Controllers\Auth\AccountRecoveryController::class, 'forgot'])->setName('password.forgot.submit');
 
-    $group->get('/reset-password', [\App\Controllers\AccountRecoveryController::class, 'resetForm'])->setName('password.reset');
-    $group->post('/reset-password', [\App\Controllers\AccountRecoveryController::class, 'reset'])->setName('password.reset.submit');
+    $group->get('/reset-password', [\App\Controllers\Auth\AccountRecoveryController::class, 'resetForm'])->setName('password.reset');
+    $group->post('/reset-password', [\App\Controllers\Auth\AccountRecoveryController::class, 'reset'])->setName('password.reset.submit');
 
     // Email Verification
-    $group->get('/verify-email', [\App\Controllers\AccountRecoveryController::class, 'verifyForm'])->setName('email.verify');
-    $group->post('/verify-email', [\App\Controllers\AccountRecoveryController::class, 'verify'])->setName('email.verify.submit');
+    $group->get('/verify-email', [\App\Controllers\Auth\AccountRecoveryController::class, 'verifyForm'])->setName('email.verify');
+    $group->post('/verify-email', [\App\Controllers\Auth\AccountRecoveryController::class, 'verify'])->setName('email.verify.submit');
 
-    $group->get('/resend-verification', [\App\Controllers\AccountRecoveryController::class, 'resendForm']);
-    $group->post('/resend-verification', [\App\Controllers\AccountRecoveryController::class, 'resend']);
+    $group->get('/resend-verification', [\App\Controllers\Auth\AccountRecoveryController::class, 'resendForm']);
+    $group->post('/resend-verification', [\App\Controllers\Auth\AccountRecoveryController::class, 'resend']);
 
   });
 
@@ -48,15 +48,15 @@ return static function (App $app): void {
   $app->group('', function (RouteCollectorProxy $group): void {
 
     // Logout
-    $group->post('/logout', [\App\Controllers\AuthController::class, 'logout'])->setName('logout');
+    $group->post('/logout', [\App\Controllers\Auth\AuthController::class, 'logout'])->setName('logout');
 
     // Dashboard
-    $group->get('/dashboard', [\App\Controllers\AuthController::class, 'dashboard'])->setName('dashboard');
+    $group->get('/dashboard', [\App\Controllers\Auth\AuthController::class, 'dashboard'])->setName('dashboard');
 
     // WebSocket Authentication
     $group->post(
       '/auth/websocket-ticket',
-      [\App\Controllers\WebSocketController::class, 'ticket']
+      [\App\Controllers\WebSocket\WebSocketController::class, 'ticket']
     )->setName('websocket.ticket');
 
     // --- Account Settings ---

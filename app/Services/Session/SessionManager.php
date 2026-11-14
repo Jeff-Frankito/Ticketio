@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace App\Services;
+namespace App\Services\Session;
 
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;

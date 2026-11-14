@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace App\Services;
+namespace App\Services\Mail;
 
 use InvalidArgumentException;
 use PHPMailer\PHPMailer\Exception as MailException;
